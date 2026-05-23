@@ -1,0 +1,69 @@
+# myapp/management/commands/load_json_questions.py
+import json
+from django.core.management.base import BaseCommand
+from core.models import Questions, Choices  # Replace 'myapp' with your actual app name
+
+
+class Command(BaseCommand):
+    help = 'Extracts questions, code, and Choices from a JSON file and loads them into the DB.'
+
+    def add_arguments(self, parser):
+        parser.add_argument('json_path', type=str, help='Path to the JSON file')
+
+    def handle(self, *args, **kwargs):
+        json_path = kwargs['json_path']
+
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except Exception as e:
+            self.stderr.write(self.style.ERROR(f"Failed to read JSON: {e}"))
+            return
+
+        questions_created = 0
+
+        for item in data:
+            # 1. Determine if it's an MCQ
+            q_type = item.get('type', '').strip().lower()
+            is_mcq = (q_type == 'mcq')
+
+            # 2. Extract base fields
+            full_text = item.get('text', '').strip()
+            correct_answer = item.get('correct', '').strip()
+
+            # Use `or []` because JSON might have `null` for non-MCQ Choices
+            options_list = item.get('options') or []
+
+            # 3. Distinguish `text` from `code`
+            # Heuristic: If it has "\nclass ", "\nint ", etc., the first sentence is the prompt
+            # (e.g. "What is the output?") and the rest is the C++ code block.
+            code_markers = ['\nclass ', '\nstruct ', '\nint ', '\nvoid ', '\n#include', '\nbool ', '\nchar ']
+            has_code = any(marker in full_text for marker in code_markers)
+
+            if has_code:
+                # Split at the first newline
+                parts = full_text.split('\n', 1)
+                text = parts[0].strip()
+                code_text = parts[1].strip() if len(parts) > 1 else ""
+            else:
+                text = full_text
+                code_text = ""
+
+            # 4. Save the Question to the Database
+            question_obj = Questions.objects.create(
+                text=text,
+                is_mcq=is_mcq,
+                code=code_text,
+                correct_answer=correct_answer
+            )
+
+            # 5. Save the Choices referencing the newly created question
+            for opt in options_list:
+                Choices.objects.create(
+                    question=question_obj,
+                    text=opt.strip()
+                )
+
+            questions_created += 1
+
+        self.stdout.write(self.style.SUCCESS(f'Successfully imported {questions_created} questions from JSON!'))
