@@ -17,4 +17,4 @@ class Choices(models.Model):
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.pk} - {self.text}"
+        return f"{self.choice_character}) {self.text}"
