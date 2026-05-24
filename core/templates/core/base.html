@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>oops-oop</title>
+    <style>
+        .navbar {
+            height: 10vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eee;
+        }
+        .navbar ul {
+            list-style: none;
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <ul class="nav-items">
+            <li class="home">
+                <a href="{% url 'core:index' %}" class="home-button">Home</a>
+            </li>
+            <li class="incorrect-counter">Consecutive Incorrect: 0</li>
+            <li class="level-question-counter">Current Level: 1</li>
+            <li class="level-question-counter">Question Number: 1</li>
+            {% if user.is_authenticated %}
+            <li class="username">{{ user.username }}</li>
+            {% else %}
+            <li class="login-button">
+                <a href="{% url 'core:login' %}" class="login-button">Login</a>
+            </li>
+            <li class="register-button">
+                <a href="{% url 'core:register' %}" class="register-button">Register</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
