@@ -14,6 +14,7 @@ class Questions(models.Model):
     is_mcq = models.BooleanField(default=True)
     code = models.TextField()
     correct_answer = models.CharField(max_length=255)
+    level = models.IntegerField(blank=False)
 
     def __str__(self):
         return f"{self.text}"

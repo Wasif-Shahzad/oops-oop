@@ -1,11 +1,11 @@
 # myapp/management/commands/load_json_questions.py
 import json
 from django.core.management.base import BaseCommand
-from core.models import Questions, Choices  # Replace 'myapp' with your actual app name
+from core.models import Questions, Choices
 
 
 class Command(BaseCommand):
-    help = 'Extracts questions, code, and Choices from a JSON file and loads them into the DB.'
+    help = 'Extracts questions, code, Choices, and level from a JSON file and loads them into the DB.'
 
     def add_arguments(self, parser):
         parser.add_argument('json_path', type=str, help='Path to the JSON file')
@@ -27,16 +27,15 @@ class Command(BaseCommand):
             q_type = item.get('type', '').strip().lower()
             is_mcq = (q_type == 'mcq')
 
-            # 2. Extract base fields
+            # 2. Extract base fields including Level
             full_text = item.get('text', '').strip()
             correct_answer = item.get('correct', '').strip()
+            level = item.get('level', 1)  # <--- Added level extraction here
 
             # Use `or []` because JSON might have `null` for non-MCQ Choices
             options_list = item.get('options') or []
 
             # 3. Distinguish `text` from `code`
-            # Heuristic: If it has "\nclass ", "\nint ", etc., the first sentence is the prompt
-            # (e.g. "What is the output?") and the rest is the C++ code block.
             code_markers = ['\nclass ', '\nstruct ', '\nint ', '\nvoid ', '\n#include', '\nbool ', '\nchar ']
             has_code = any(marker in full_text for marker in code_markers)
 
@@ -54,7 +53,8 @@ class Command(BaseCommand):
                 text=text,
                 is_mcq=is_mcq,
                 code=code_text,
-                correct_answer=correct_answer
+                correct_answer=correct_answer,
+                level=level  # <--- Saved to the database here
             )
 
             # 5. Save the Choices referencing the newly created question
