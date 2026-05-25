@@ -4,6 +4,9 @@ from django.db import models
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
+    incorrect_counter = models.IntegerField(default=0)
+    current_level = models.IntegerField(default=1)
+    question_number = models.IntegerField(default=1)
 
 
 class Questions(models.Model):
