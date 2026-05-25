@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from .forms import UserRegisterForm
 
 def index(request):
-    return render(request, 'core/base.html', {})
+    return render(request, 'core/index.html', {})
 
 def register(request):
     if request.user.is_authenticated:

@@ -26,9 +26,9 @@
             <li class="home">
                 <a href="{% url 'core:index' %}" class="home-button">Home</a>
             </li>
-            <li class="incorrect-counter">Consecutive Incorrect: 0</li>
-            <li class="level-question-counter">Current Level: 1</li>
-            <li class="level-question-counter">Question Number: 1</li>
+            <li class="incorrect-counter">Consecutive Incorrect: {{ user.incorrect_counter }}</li>
+            <li class="level-question-counter">Current Level: {{ user.current_level }}</li>
+            <li class="level-question-counter">Question Number: {{ user.question_number }}</li>
             {% if user.is_authenticated %}
             <li class="username">{{ user.username }}</li>
             {% else %}
