@@ -1,12 +1,12 @@
 from django.core.management.base import BaseCommand
-from core.models import Choices
+from core.models import Choice
 
 
 class Command(BaseCommand):
     help = "Remove option characters like A) , B) from text and add them as separate fields"
 
     def handle(self, *args, **kwargs):
-        choices = Choices.objects.all()
+        choices = Choice.objects.all()
         for choice in choices:
             new_text = choice.text[3:]
             option = choice.text[0]

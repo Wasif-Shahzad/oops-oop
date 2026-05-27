@@ -1,7 +1,7 @@
 # myapp/management/commands/load_json_questions.py
 import json
 from django.core.management.base import BaseCommand
-from core.models import Questions, Choices
+from core.models import Question, Choice
 
 
 class Command(BaseCommand):
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 code_text = ""
 
             # 4. Save the Question to the Database
-            question_obj = Questions.objects.create(
+            question_obj = Question.objects.create(
                 text=text,
                 is_mcq=is_mcq,
                 code=code_text,
@@ -59,7 +59,7 @@ class Command(BaseCommand):
 
             # 5. Save the Choices referencing the newly created question
             for opt in options_list:
-                Choices.objects.create(
+                Choice.objects.create(
                     question=question_obj,
                     text=opt.strip()
                 )
