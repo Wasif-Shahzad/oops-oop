@@ -51,6 +51,9 @@ class Level(models.Model):
             current_question_started_at=timezone.now()
         )
 
+    def __str__(self):
+        return f"Level: {self.level_number}"
+
 
 class UserQuiz(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -100,6 +103,9 @@ class UserQuiz(models.Model):
         self.save()
         return next_question
 
+    def __str__(self):
+        return f"Quiz started by {self.user.username} at {self.started_at} for level {self.level.level_number}"
+
 
 class UserAnswer(models.Model):
     user_quiz = models.ForeignKey(UserQuiz, on_delete=models.CASCADE)
@@ -110,3 +116,7 @@ class UserAnswer(models.Model):
 
     is_correct = models.BooleanField()
     timed_out = models.BooleanField(default=False)
+
+    def __str__(self):
+        status = "correct" if self.is_correct else "incorrect"
+        return f"Answer for {self.question.text} by {self.user_quiz.user.username} is {status}"
