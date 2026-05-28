@@ -54,7 +54,6 @@ class Command(BaseCommand):
                 is_mcq=is_mcq,
                 code=code_text,
                 correct_answer=correct_answer,
-                level=level  # <--- Saved to the database here
             )
 
             # 5. Save the Choices referencing the newly created question
