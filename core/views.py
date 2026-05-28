@@ -1,10 +1,10 @@
-from typing import override
+from typing import Any, override
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render, reverse, get_object_or_404
 from django.urls import reverse_lazy
 
-from .forms import UserRegisterForm
+from .forms import MCQForm, UserRegisterForm, TextForm
 from .models import Level, UserQuiz
 
 def index(request):
@@ -47,9 +47,33 @@ class CustomLoginView(LoginView):
         return super().get(request, *args, **kwargs)
 
 
+def next_view(request):
+    user_quiz = get_object_or_404(UserQuiz, pk=request.session['user_quiz'])
+    user_quiz.get_next_question()
+    return redirect(reverse('core:quiz'))
+
 def quiz_view(request):
     user_quiz = get_object_or_404(UserQuiz, pk=request.session['user_quiz'])
-    context = {
+    context: dict[str, Any] = {
         "user_quiz": user_quiz,
+        "show_result": False,
     }
+
+    if request.method == "POST":
+        if user_quiz.current_question.is_mcq:
+            form = MCQForm(request.POST, question=user_quiz.current_question)
+        else:
+            form = TextForm(request.POST)
+        if form.is_valid():
+            ans = form.cleaned_data["ans"]
+            answer = user_quiz.submit_answer(ans)
+            context["answer"] = answer
+            context["show_result"] = True
+    else:
+        if user_quiz.current_question.is_mcq:
+            form = MCQForm(question=user_quiz.current_question)
+        else:
+            form = TextForm()
+            
+    context["form"] = form
     return render(request, "core/quiz.html", context)

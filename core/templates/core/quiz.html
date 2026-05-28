@@ -3,10 +3,26 @@
 <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;
 margin-top: 3rem;">
     <form action="" method="post">
+        {% csrf_token %}
         <div class="text">{{ user_quiz.current_question.text }}</div>
         <pre><code>
 {{ user_quiz.current_question.code }}</code></pre>
-        
+        {{ form.as_p }}
+        {% if show_result %}
+            <p>
+                {% if answer.timed_out %}
+                Time out! Correct is {{ user_quiz.current_question.correct_answer }}
+                {% elif answer.is_correct %}
+                Correct Answer!
+                {% else %}
+                Incorrect! Correct is {{ user_quiz.current_question.correct_answer }}
+                {% endif %}
+            </p>
+        {% endif %}
+        <button type="submit" {% if show_result %}disabled{% endif %}>Submit</button>
+        {% if show_result %}
+            <button><a href="{% url 'core:next' %}">Next</a></button>
+        {% endif %}
     </form>
 </div>
 {% endblock content %}

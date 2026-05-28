@@ -28,9 +28,10 @@
             </li>
             <li class="incorrect-counter">Consecutive Incorrect: {{ user.incorrect_counter }}</li>
             <li class="level-question-counter">Current Level: {{ user.current_level }}</li>
-            <li class="level-question-counter">Question Number: {{ user.question_number }}</li>
+            <li class="level-question-counter">Question Number: {{ user.current_passed }}</li>
             {% if user.is_authenticated %}
-            <li class="username">{{ user.username }}</li>
+                <li class="username">{{ user.username }}</li>
+                <a href="{% url 'core:index' %}">Restart!</a>
             {% else %}
             <li class="login-button">
                 <a href="{% url 'core:login' %}" class="login-button">Login</a>
