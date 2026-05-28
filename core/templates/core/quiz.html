@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;
+margin-top: 3rem;">
+    <form action="" method="post">
+        <div class="text">{{ user_quiz.current_question.text }}</div>
+        <pre><code>
+{{ user_quiz.current_question.code }}</code></pre>
+        
+    </form>
+</div>
+{% endblock content %}

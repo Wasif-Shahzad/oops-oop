@@ -12,6 +12,10 @@ class User(AbstractUser):
     incorrect_counter = models.IntegerField(default=0)
     times_down = models.IntegerField(default=0)
 
+    def reset(self):
+        self.current_level = 1
+        self.current_passed = self.incorrect_counter = self.times_down = 0
+
 
 class Question(models.Model):
     text = models.TextField()

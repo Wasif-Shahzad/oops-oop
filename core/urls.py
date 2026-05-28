@@ -8,4 +8,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('register/', views.register, name='register'),
     path('login/', views.CustomLoginView.as_view(authentication_form=AuthenticationForm), name='login'),
+    path('quiz/', views.quiz_view, name='quiz')
 ]
