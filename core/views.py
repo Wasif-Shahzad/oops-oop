@@ -7,10 +7,25 @@ from django.urls import reverse_lazy
 from .forms import MCQForm, UserRegisterForm, TextForm
 from .models import Level, UserQuiz
 
+def delete_existing_quizzes(user):
+    for i in range(1, 11):
+        UserQuiz.objects.filter(
+            user=user,
+            level__level_number=i,
+        ).delete()
+
+def restart(request):
+    delete_existing_quizzes(request.user)
+    return redirect(reverse('core:index'))
+
 def index(request):
     if request.method == "POST":
         request.user.reset()
 
+        # delete existing UserQuiz instances
+        delete_existing_quizzes(request.user)
+
+        # create new levels
         for level in Level.objects.all():
             level.start(request.user)
 

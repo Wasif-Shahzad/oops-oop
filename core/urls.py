@@ -10,4 +10,5 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(authentication_form=AuthenticationForm), name='login'),
     path('quiz/', views.quiz_view, name='quiz'),
     path('quiz/next/', views.next_view, name='next'),
+    path('quiz/restart/', views.restart, name='restart')
 ]

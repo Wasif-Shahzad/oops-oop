@@ -31,7 +31,7 @@
             <li class="level-question-counter">Question Number: {{ user.current_passed|add:"1" }}</li>
             {% if user.is_authenticated %}
                 <li class="username">{{ user.username }}</li>
-                <a href="{% url 'core:index' %}">Restart!</a>
+                <a href="{% url 'core:restart' %}">Restart!</a>
             {% else %}
             <li class="login-button">
                 <a href="{% url 'core:login' %}" class="login-button">Login</a>
