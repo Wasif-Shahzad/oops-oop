@@ -1,0 +1,9 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container" style="display: flex; justify-content: center; align-items: center">
+    <div class="in-container" style="display: flex; justify-content: center; align-items: center; flex-direction: column">
+        {{ message }}
+        <a href="{% url 'core:restart' %}">Restart!</a>
+    </div>
+</div>
+{% endblock content %}

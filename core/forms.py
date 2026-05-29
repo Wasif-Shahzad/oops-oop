@@ -21,7 +21,7 @@ class MCQForm(forms.Form):
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
         super().__init__(*args, **kwargs)
-        choices_tuple = [(c.choice_character, f"{c.choice_character}) {c.text}") for c in question.choice_set.all()]
+        choices_tuple = [(c.choice_character, f"{c.text}") for c in question.choice_set.all()]
         self.fields['ans'].choices = choices_tuple
 
 

@@ -15,6 +15,7 @@ class User(AbstractUser):
     def reset(self):
         self.current_level = 1
         self.current_passed = self.incorrect_counter = self.times_down = 0
+        self.save()
 
 
 class Question(models.Model):
@@ -120,6 +121,28 @@ class UserAnswer(models.Model):
 
     is_correct = models.BooleanField()
     timed_out = models.BooleanField(default=False)
+
+    def update_quiz_status(self):
+        user = self.user_quiz.user
+        if self.is_correct:
+            user.current_passed += 1
+            user.incorrect_counter = 0
+        else:
+            user.incorrect_counter += 1
+
+        # Level up.
+        if user.current_passed == 10:
+            user.current_level += 1
+            user.current_passed = user.incorrect_counter = 0
+
+        # Level down.
+        if user.incorrect_counter == 2:
+            if user.current_level > 1:
+                user.current_level -= 1
+                user.current_passed = user.incorrect_counter = 0
+                user.times_down += 1
+            user.incorrect_counter = 0
+        user.save()
 
     def __str__(self):
         status = "correct" if self.is_correct else "incorrect"

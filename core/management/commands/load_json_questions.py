@@ -20,6 +20,9 @@ class Command(BaseCommand):
             self.stderr.write(self.style.ERROR(f"Failed to read JSON: {e}"))
             return
 
+        # Optional: Add a safety prompt here if you plan to wipe existing data automatically
+        # Question.objects.all().delete()
+
         questions_created = 0
 
         for item in data:
@@ -30,9 +33,8 @@ class Command(BaseCommand):
             # 2. Extract base fields including Level
             full_text = item.get('text', '').strip()
             correct_answer = item.get('correct', '').strip()
-            level = item.get('level', 1)  # <--- Added level extraction here
+            level = item.get('level', 1)
 
-            # Use `or []` because JSON might have `null` for non-MCQ Choices
             options_list = item.get('options') or []
 
             # 3. Distinguish `text` from `code`
@@ -40,13 +42,16 @@ class Command(BaseCommand):
             has_code = any(marker in full_text for marker in code_markers)
 
             if has_code:
-                # Split at the first newline
                 parts = full_text.split('\n', 1)
                 text = parts[0].strip()
                 code_text = parts[1].strip() if len(parts) > 1 else ""
             else:
                 text = full_text
                 code_text = ""
+
+            # Fix correct_answer formatting specifically for MCQs
+            if is_mcq and correct_answer:
+                correct_answer = correct_answer[0].upper()  # Added .upper() for consistency
 
             # 4. Save the Question to the Database
             question_obj = Question.objects.create(
@@ -56,12 +61,17 @@ class Command(BaseCommand):
                 correct_answer=correct_answer,
             )
 
-            # 5. Save the Choices referencing the newly created question
-            for opt in options_list:
-                Choice.objects.create(
-                    question=question_obj,
-                    text=opt.strip()
-                )
+            if is_mcq:
+                # 5. Save the Choices sequentially (A, B, C, D...)
+                for idx, opt in enumerate(options_list):
+                    # Generates 'A' for idx 0, 'B' for idx 1, etc.
+                    current_char = chr(65 + idx)
+
+                    Choice.objects.create(
+                        question=question_obj,
+                        choice_character=current_char,  # <-- FIXED
+                        text=opt.strip()
+                    )
 
             questions_created += 1
 

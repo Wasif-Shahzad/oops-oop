@@ -16,6 +16,7 @@ def delete_existing_quizzes(user):
 
 def restart(request):
     delete_existing_quizzes(request.user)
+    request.user.reset()
     return redirect(reverse('core:index'))
 
 def index(request):
@@ -29,11 +30,6 @@ def index(request):
         for level in Level.objects.all():
             level.start(request.user)
 
-        user_quiz = UserQuiz.objects.filter(
-            user=request.user,
-            level__level_number=request.user.current_level
-        ).first()
-        request.session['user_quiz'] = user_quiz.pk
         return redirect(reverse('core:quiz'))
     return render(request, 'core/index.html', {})
 
@@ -63,12 +59,30 @@ class CustomLoginView(LoginView):
 
 
 def next_view(request):
-    user_quiz = get_object_or_404(UserQuiz, pk=request.session['user_quiz'])
+    user_quiz = UserQuiz.objects.filter(
+        user=request.user,
+        level__level_number=request.user.current_level,
+    ).first()
     user_quiz.get_next_question()
+    if user_quiz.current_question is None:
+        return render(
+            request,
+            "core/result.html",
+            {"message": "No more questions at this level. You have failed!"}
+        )
     return redirect(reverse('core:quiz'))
 
 def quiz_view(request):
-    user_quiz = get_object_or_404(UserQuiz, pk=request.session['user_quiz'])
+    if request.user.current_level == 11:
+        return render(
+            request,
+            "core/result.html",
+            {"message": "Congratulations for completing the quiz!"}
+        )
+    user_quiz = UserQuiz.objects.filter(
+        user=request.user,
+        level__level_number=request.user.current_level,
+    ).first()
     context: dict[str, Any] = {
         "user_quiz": user_quiz,
         "show_result": False,
@@ -84,6 +98,7 @@ def quiz_view(request):
             answer = user_quiz.submit_answer(ans)
             context["answer"] = answer
             context["show_result"] = True
+            answer.update_quiz_status()
     else:
         if user_quiz.current_question.is_mcq:
             form = MCQForm(question=user_quiz.current_question)
