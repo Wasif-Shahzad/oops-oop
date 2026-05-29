@@ -113,6 +113,9 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'core.User'
 
+QUIZ_NUMBER_OF_LEVELS = 10
+
+QUIZ_NUMBER_OF_QUESTIONS_IN_LEVEL = 10
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/

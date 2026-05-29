@@ -1,7 +1,9 @@
 from typing import Any, override
+
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect, render, reverse, get_object_or_404
+from django.shortcuts import redirect, render, reverse
 from django.urls import reverse_lazy
 
 from .forms import MCQForm, UserRegisterForm, TextForm
@@ -73,7 +75,7 @@ def next_view(request):
     return redirect(reverse('core:quiz'))
 
 def quiz_view(request):
-    if request.user.current_level == 11:
+    if request.user.current_level > settings.QUIZ_NUMBER_OF_LEVELS:
         return render(
             request,
             "core/result.html",
