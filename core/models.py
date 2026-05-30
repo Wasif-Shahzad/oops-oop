@@ -73,7 +73,7 @@ class UserQuiz(models.Model):
 
         timed_out = (
             submitted_at - self.current_question_started_at
-        ).total_seconds() > 60
+        ).total_seconds() > self.current_question.duration
 
         return UserAnswer.objects.create(
             user_quiz=self,
