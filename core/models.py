@@ -1,5 +1,6 @@
 import random
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
@@ -134,7 +135,7 @@ class UserAnswer(models.Model):
             user.incorrect_counter += 1
 
         # Level up.
-        if user.current_passed == 10:
+        if user.current_passed == settings.QUIZ_NUMBER_OF_QUESTIONS_IN_LEVEL:
             user.current_level += 1
             user.current_passed = user.incorrect_counter = 0
 
