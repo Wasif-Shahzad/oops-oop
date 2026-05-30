@@ -61,13 +61,21 @@ class CustomLoginView(LoginView):
 
 
 def next_view(request):
+    if not request.user.is_authenticated:
+        return redirect(reverse('core:login'))
+
     user_quiz = UserQuiz.objects.filter(
         user=request.user,
         level__level_number=request.user.current_level,
     ).first()
+    if user_quiz is None:
+        # only happens if the quiz hasn't started yet
+        return redirect(reverse('core:index'))
+
     is_first_question = request.user.current_passed == 0 and request.user.incorrect_counter == 0
     if not is_first_question:
         user_quiz.get_next_question()
+
     if user_quiz.current_question is None:
         return render(
             request,
@@ -77,6 +85,9 @@ def next_view(request):
     return redirect(reverse('core:quiz'))
 
 def quiz_view(request):
+    if not request.user.is_authenticated:
+        return redirect(reverse('core:login'))
+
     if request.user.current_level > settings.QUIZ_NUMBER_OF_LEVELS:
         return render(
             request,
@@ -87,6 +98,9 @@ def quiz_view(request):
         user=request.user,
         level__level_number=request.user.current_level,
     ).first()
+    if user_quiz is None:
+        return redirect(reverse('core:index'))
+
     context: dict[str, Any] = {
         "user_quiz": user_quiz,
         "show_result": False,

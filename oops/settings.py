@@ -117,6 +117,8 @@ QUIZ_NUMBER_OF_LEVELS = 10
 
 QUIZ_NUMBER_OF_QUESTIONS_IN_LEVEL = 10
 
+LOGIN_URL = '/login/'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
