@@ -73,7 +73,7 @@ class QuizTest(TestCase):
             for i in [1, 2]:
                 johns_answer = johns_quiz.submit_answer(f"1{i}")
                 johns_answer.update_quiz_status()
-                johns_quiz.get_next_question()
+                johns_quiz.get_next_question(randomized=False)
             john.refresh_from_db()
             self.assertEqual(john.current_level, 2)
 
@@ -84,7 +84,7 @@ class QuizTest(TestCase):
             for i in range(2):
                 johns_answer = johns_quiz.submit_answer(f"32")
                 johns_answer.update_quiz_status()
-                johns_quiz.get_next_question()
+                johns_quiz.get_next_question(randomized=False)
             john.refresh_from_db()
             self.assertEqual(john.current_level, 1)
             self.assertEqual(john.times_down, 1)
@@ -96,7 +96,7 @@ class QuizTest(TestCase):
             user=john,
             level__level_number=1
         ).first()
-        johns_quiz.get_next_question()
+        johns_quiz.get_next_question(randomized=False)
         john.refresh_from_db()
         self.assertEqual(john.incorrect_counter, 1)
 
@@ -137,7 +137,7 @@ class QuizTest(TestCase):
         for i in range(2):
             johns_answer = johns_quiz.submit_answer("22")
             johns_answer.update_quiz_status()
-            johns_quiz.get_next_question()
+            johns_quiz.get_next_question(randomized=False)
             john.refresh_from_db()
         self.assertEqual(john.current_level, 1)
         self.assertEqual(john.times_down, 0)

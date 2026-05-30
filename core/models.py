@@ -88,7 +88,7 @@ class UserQuiz(models.Model):
             submitted_at=submitted_at
         )
 
-    def get_next_question(self):
+    def get_next_question(self, randomized=True):
         answered = self.useranswer_set.values_list(
             'question_id',
             flat=True
@@ -103,7 +103,10 @@ class UserQuiz(models.Model):
 
         next_question = None
         if remaining.exists():
-            next_question = remaining.first()
+            next_question = (
+                random.choice(list(remaining)) if randomized
+                else remaining.first()
+            )
 
         self.current_question = next_question
         self.current_question_started_at = (
