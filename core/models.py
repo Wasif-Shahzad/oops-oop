@@ -92,6 +92,10 @@ class UserQuiz(models.Model):
             'question_id',
             flat=True
         )
+        is_first_question = self.user.current_passed == 0 and self.user.incorrect_counter == 0
+        if self.current_question.id not in answered and not is_first_question:
+            empty_answer = self.submit_answer("")
+            empty_answer.update_quiz_status()
 
         remaining = self.level.questions.exclude(
             id__in=answered
@@ -141,7 +145,6 @@ class UserAnswer(models.Model):
                 user.current_level -= 1
                 user.current_passed = user.incorrect_counter = 0
                 user.times_down += 1
-            user.incorrect_counter = 0
         user.save()
 
     def __str__(self):
