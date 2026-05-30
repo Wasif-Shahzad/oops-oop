@@ -92,8 +92,7 @@ class UserQuiz(models.Model):
             'question_id',
             flat=True
         )
-        is_first_question = self.user.current_passed == 0 and self.user.incorrect_counter == 0
-        if self.current_question.id not in answered and not is_first_question:
+        if self.current_question.id not in answered:
             empty_answer = self.submit_answer("")
             empty_answer.update_quiz_status()
 

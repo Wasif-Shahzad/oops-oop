@@ -65,7 +65,9 @@ def next_view(request):
         user=request.user,
         level__level_number=request.user.current_level,
     ).first()
-    user_quiz.get_next_question()
+    is_first_question = request.user.current_passed == 0 and request.user.incorrect_counter == 0
+    if not is_first_question:
+        user_quiz.get_next_question()
     if user_quiz.current_question is None:
         return render(
             request,
