@@ -88,12 +88,12 @@ class UserQuiz(models.Model):
             submitted_at=submitted_at
         )
 
-    def get_next_question(self, randomized=True):
+    def get_next_question(self, randomized=True, auto_submit=True):
         answered = self.useranswer_set.values_list(
             'question_id',
             flat=True
         )
-        if self.current_question.id not in answered:
+        if self.current_question.id not in answered and auto_submit:
             empty_answer = self.submit_answer("")
             empty_answer.update_quiz_status()
 

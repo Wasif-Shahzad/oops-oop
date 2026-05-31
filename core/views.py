@@ -72,9 +72,7 @@ def next_view(request):
         # only happens if the quiz hasn't started yet
         return redirect(reverse('core:index'))
 
-    is_first_question = request.user.current_passed == 0 and request.user.incorrect_counter == 0
-    if not is_first_question:
-        user_quiz.get_next_question()
+    user_quiz.get_next_question(auto_submit=False)
 
     if user_quiz.current_question is None:
         return render(
