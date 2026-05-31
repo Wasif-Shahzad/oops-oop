@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;
 margin-top: 3rem;">
-    <form action="" method="post" style="width: 400px;">
+    <form action="" method="post" style="width: 600px;" novalidate>
         {% csrf_token %}
         <div class="text">{{ user_quiz.current_question.text }}</div>
         <pre><code>
@@ -25,4 +25,54 @@ margin-top: 3rem;">
         {% endif %}
     </form>
 </div>
+<div class="timer-container" style="margin-top: 3rem; display: flex; justify-content: center; align-items: center; flex-direction: column">
+    {{ user_quiz.current_question_started_at|json_script:"start-time" }}
+    {{ show_result|json_script:"flag" }}
+    {{ user_quiz.current_question.duration|json_script:"duration" }}
+    <p class="timer-heading" style="color: red; font-size: 2rem; font-weight: bold;">Time left:</p>
+    <p class="timer" style="margin-top: -1rem;"></p>
+</div>
 {% endblock content %}
+{% block javascript %}
+<script>
+    let incomingDate;
+    let duration;
+    let lastTime;
+    let flag;
+
+    window.onload = () => {
+        incomingDate = JSON.parse(document.getElementById('start-time').textContent);
+        duration = JSON.parse(document.getElementById('duration').textContent);
+        lastTime = new Date(incomingDate);
+        console.log(lastTime);
+        lastTime.setSeconds(lastTime.getSeconds() + duration);
+        console.log(lastTime);
+        flag = JSON.parse(document.getElementById('flag').textContent);
+
+        if (!flag) {
+            const currentTime = new Date()
+            const secondsRemaining = Math.floor((lastTime - currentTime) / 1000);
+            document.querySelector('.timer').innerHTML = "00:" + (secondsRemaining < 10 ? "0" : "") + secondsRemaining;
+            timer();
+        }
+    };
+
+    function submitEmptyForm() {
+        const form = document.querySelector('form');
+        form.submit();
+    }
+
+    timer = () => {
+        const currentTime = new Date()
+        let secondsRemaining = Math.floor((lastTime - currentTime) / 1000);
+        let timer = setInterval(() => {
+            document.querySelector('.timer').innerHTML = "00:" + (secondsRemaining < 10 ? "0" : "") + secondsRemaining;
+            secondsRemaining--;
+            if (secondsRemaining < 0) {
+                clearInterval(timer);
+                submitEmptyForm();
+            }
+        }, 1000);
+    };
+</script>
+{% endblock javascript %}

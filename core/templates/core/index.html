@@ -1,9 +1,13 @@
 {% extends 'core/base.html' %}
 {% block content %}
 <div class="container" style="display: flex; align-items: center; justify-content: center; margin-top: 3rem;">
-    <form action="" method="post">
-        {% csrf_token %}
-        <button type="submit" style="height: 3rem; width: 8rem; font-size: 2rem;">Start</button>
-    </form>
+    {% if user.is_authenticated %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <button type="submit" style="height: 3rem; width: 8rem; font-size: 2rem;">Start</button>
+        </form>
+    {% else %}
+        <p>Login to get started!</p>
+    {% endif %}
 </div>
 {% endblock content %}

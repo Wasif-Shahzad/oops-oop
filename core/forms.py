@@ -15,7 +15,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class MCQForm(forms.Form):
-    ans = forms.ChoiceField(widget=forms.RadioSelect, required=True)
+    ans = forms.ChoiceField(widget=forms.RadioSelect, required=False)
 
     @override
     def __init__(self, *args, **kwargs):
@@ -26,4 +26,4 @@ class MCQForm(forms.Form):
 
 
 class TextForm(forms.Form):
-    ans = forms.CharField(required=True, label='Enter the Answer')
+    ans = forms.CharField(label='Enter the Answer', required=False)
