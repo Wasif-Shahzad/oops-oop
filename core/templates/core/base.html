@@ -28,7 +28,7 @@
             </li>
             <li class="incorrect-counter">Consecutive Incorrect: {{ user.incorrect_counter }}</li>
             <li class="level-question-counter">Current Level: {{ user.current_level }}</li>
-            <li class="level-question-counter">Question Number: {{ user.current_passed }}</li>
+            <li class="level-question-counter">Questions Passed: {{ user.current_passed }}</li>
             {% if user.is_authenticated %}
                 <li class="username">{{ user.username }}</li>
                 <a href="{% url 'core:restart' %}">Restart!</a>
