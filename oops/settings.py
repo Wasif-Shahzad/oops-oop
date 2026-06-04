@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'oops.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": env("DATABASE_ENGINE", default="django.db.backends.sqlite3"),
-        "NAME": env("DATABASE_NAME", default=BASE_DIR / "db.sqlite3"),
+        "NAME": env.str("DATABASE_NAME", default=BASE_DIR / "db.sqlite3"),
         "USER": env("DATABASE_USER", default=""),
         "PASSWORD": env("DATABASE_PASSWORD", default=""),
         "HOST": env("DATABASE_HOST", default=""),
@@ -134,6 +134,6 @@ LOGIN_URL = '/login/'
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = env('DJANGO_STATIC_ROOT')
+STATIC_ROOT = env('DJANGO_STATIC_ROOT', default='')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
