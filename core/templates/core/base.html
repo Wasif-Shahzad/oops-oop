@@ -23,9 +23,11 @@
 <body>
     <div class="navbar">
         <ul class="nav-items">
-            <li class="home">
-                <a href="{% url 'core:index' %}" class="home-button">Home</a>
-            </li>
+            {% if not user.is_authenticated or request.session.quiz_started == False %}
+                <li class="home">
+                    <a href="{% url 'core:index' %}" class="home-button">Home</a>
+                </li>
+            {% endif %}
             <li class="incorrect-counter">Consecutive Incorrect: {{ user.incorrect_counter }}</li>
             <li class="level-question-counter">Current Level: {{ user.current_level }}</li>
             <li class="level-question-counter">Questions Passed: {{ user.current_passed }}</li>

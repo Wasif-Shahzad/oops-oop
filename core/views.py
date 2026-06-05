@@ -2,6 +2,7 @@ from typing import Any, override
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render, reverse
 from django.urls import reverse_lazy
@@ -12,10 +13,14 @@ from .models import Level, UserQuiz
 
 def restart(request):
     request.user.reset()
+    request.session['quiz_started'] = False
     return redirect(reverse('core:index'))
 
 
 def index(request):
+    if request.session.get('quiz_started', False):
+        return redirect(reverse('core:quiz'))
+
     if request.method == "POST":
         request.user.reset()
 
@@ -23,6 +28,7 @@ def index(request):
         for level in Level.objects.all():
             level.start(request.user)
 
+        request.session['quiz_started'] = True
         return redirect(reverse('core:quiz'))
     return render(request, 'core/index.html', {})
 
