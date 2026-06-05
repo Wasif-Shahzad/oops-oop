@@ -17,7 +17,7 @@ class UserQuizModel(admin.ModelAdmin):
 
 
 class UserAnswerModel(admin.ModelAdmin):
-    search_fields = ["user__username"]
+    search_fields = ["user_quiz__user__username"]
     list_filter = ["is_correct", "timed_out"]
 
 
