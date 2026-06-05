@@ -9,24 +9,15 @@ from django.urls import reverse_lazy
 from .forms import MCQForm, UserRegisterForm, TextForm
 from .models import Level, UserQuiz
 
-def delete_existing_quizzes(user):
-    for i in range(1, 11):
-        UserQuiz.objects.filter(
-            user=user,
-            level__level_number=i,
-        ).delete()
 
 def restart(request):
-    delete_existing_quizzes(request.user)
     request.user.reset()
     return redirect(reverse('core:index'))
+
 
 def index(request):
     if request.method == "POST":
         request.user.reset()
-
-        # delete existing UserQuiz instances
-        delete_existing_quizzes(request.user)
 
         # create new levels
         for level in Level.objects.all():
@@ -34,6 +25,7 @@ def index(request):
 
         return redirect(reverse('core:quiz'))
     return render(request, 'core/index.html', {})
+
 
 def register(request):
     if request.user.is_authenticated:
@@ -67,7 +59,7 @@ def next_view(request):
     user_quiz = UserQuiz.objects.filter(
         user=request.user,
         level__level_number=request.user.current_level,
-    ).first()
+    ).order_by("-started_at").first()
     if user_quiz is None:
         # only happens if the quiz hasn't started yet
         return redirect(reverse('core:index'))
@@ -83,6 +75,7 @@ def next_view(request):
         )
     return redirect(reverse('core:quiz'))
 
+
 def quiz_view(request):
     if not request.user.is_authenticated:
         return redirect(reverse('core:login'))
@@ -96,7 +89,7 @@ def quiz_view(request):
     user_quiz = UserQuiz.objects.filter(
         user=request.user,
         level__level_number=request.user.current_level,
-    ).first()
+    ).order_by("-started_at").first()
     if user_quiz is None:
         return redirect(reverse('core:index'))
 
@@ -121,6 +114,6 @@ def quiz_view(request):
             form = MCQForm(question=user_quiz.current_question)
         else:
             form = TextForm()
-            
+
     context["form"] = form
     return render(request, "core/quiz.html", context)
