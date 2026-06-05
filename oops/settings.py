@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import sys
 import os
 from environ import Env
 from pathlib import Path
@@ -94,6 +95,33 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {"format": "{levelname} {message}", "style": "{"},
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "simple",
+        }
+    },
+    "root": {"handlers": ["console"], "level": "DEBUG"},
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

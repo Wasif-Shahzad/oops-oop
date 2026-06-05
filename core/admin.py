@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
 from .models import User, Question, Choice, Level, UserQuiz, UserAnswer
 
@@ -22,7 +21,7 @@ class UserAnswerModel(admin.ModelAdmin):
     list_filter = ["is_correct", "timed_out"]
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(User)
 admin.site.register(Question, QuestionModel)
 admin.site.register(Level)
 admin.site.register(UserQuiz, UserQuizModel)
