@@ -81,7 +81,7 @@ class UserQuiz(models.Model):
             question=question,
             answer=answer,
             is_correct=(
-                answer == question.correct_answer
+                answer.lower() == question.correct_answer.lower()
                 and not timed_out
             ),
             timed_out=timed_out,
