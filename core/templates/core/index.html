@@ -1,18 +1,20 @@
 {% extends 'core/base.html' %}
 {% block content %}
-<div class="container" style="display: flex; align-items: center; justify-content: center; margin-top: 3rem;">
+<div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 3rem;">
     {% if user.is_authenticated %}
-        <form action="" method="post">
-            {% csrf_token %}
-            <button type="submit" style="height: 3rem; width: 8rem; font-size: 2rem;">Start</button>
-        </form>
-        <h3>Notes:</h3>
+        <h1>Notes:</h1>
         <ol>
             <li>There are 10 levels in total.</li>
             <li>To pass one level, you need to pass 10 questions.</li>
             <li>If you get two incorrect or timed out questions in a row, your level goes down</li>
             <li>You have 60 seconds for each question.</li>
+            <li>Going down in Level resets the Questions passed counter to 0 for the level from which you are relegated.</li>
+            <li>You can see the counters at the top of your screen!</li>
         </ol>
+        <form action="" method="post" style="margin-top: 1rem;">
+            {% csrf_token %}
+            <button type="submit" style="height: 3rem; width: 8rem; font-size: 2rem;">Start</button>
+        </form>
     {% else %}
         <p>Login to get started!</p>
     {% endif %}
