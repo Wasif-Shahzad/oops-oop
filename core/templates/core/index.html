@@ -6,6 +6,13 @@
             {% csrf_token %}
             <button type="submit" style="height: 3rem; width: 8rem; font-size: 2rem;">Start</button>
         </form>
+        <h3>Notes:</h3>
+        <ol>
+            <li>There are 10 levels in total.</li>
+            <li>To pass one level, you need to pass 10 questions.</li>
+            <li>If you get two incorrect or timed out questions in a row, your level goes down</li>
+            <li>You have 60 seconds for each question.</li>
+        </ol>
     {% else %}
         <p>Login to get started!</p>
     {% endif %}
