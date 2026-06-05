@@ -9,7 +9,7 @@
 </div>
 <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;
 margin-top: 3rem;">
-    <form action="" method="post" style="width: 600px;" novalidate>
+    <form action="" class="quiz-form" method="post" style="width: 600px;" novalidate>
         {% csrf_token %}
         <div class="text">{{ user_quiz.current_question.text }}</div>
         <pre><code>
@@ -28,7 +28,7 @@ margin-top: 3rem;">
         {% endif %}
         <button type="submit" {% if show_result %}disabled{% endif %}>Submit</button>
         {% if show_result %}
-            <button><a href="{% url 'core:next' %}">Next</a></button>
+            <a href="{% url 'core:next' %}"><button type="button">Next</button></a>
         {% endif %}
     </form>
 </div>
@@ -58,7 +58,7 @@ margin-top: 3rem;">
     };
 
     function submitEmptyForm() {
-        const form = document.querySelector('form');
+        const form = document.querySelector('.quiz-form');
         form.submit();
     }
 

@@ -35,7 +35,7 @@ def register(request):
         if form.is_valid():
             new_user = form.save()
             login(request, new_user)
-            login(request, new_user)
+            return redirect(reverse('core:index'))
     else:
         form = UserRegisterForm()
     return render(request, 'core/login-register.html', {"form": form})
@@ -99,6 +99,7 @@ def quiz_view(request):
     }
 
     if request.method == "POST":
+        print("a post request")
         if user_quiz.current_question.is_mcq:
             form = MCQForm(request.POST, question=user_quiz.current_question)
         else:
