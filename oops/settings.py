@@ -34,6 +34,7 @@ DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 
 # Application definition
 
@@ -129,6 +130,8 @@ QUIZ_NUMBER_OF_LEVELS = 10
 QUIZ_NUMBER_OF_QUESTIONS_IN_LEVEL = 10
 
 LOGIN_URL = '/login/'
+
+LOGOUT_REDIRECT_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
