@@ -44,17 +44,11 @@ class Level(models.Model):
     questions = models.ManyToManyField(Question)
 
     def start(self, user, randomized=True):
-        questions = list(self.questions.all())
-
-        if randomized:
-            random.shuffle(questions)
-
-        question = questions[0] if questions else None
         return UserQuiz.objects.create(
             user=user,
             level=self,
-            current_question=question,
-            current_question_started_at=timezone.now()
+            current_question=None,
+            current_question_started_at=None
         )
 
     def __str__(self):
@@ -93,7 +87,7 @@ class UserQuiz(models.Model):
             'question_id',
             flat=True
         )
-        if self.current_question.id not in answered and auto_submit:
+        if auto_submit and self.current_question is not None and self.current_question.id not in answered:
             empty_answer = self.submit_answer("")
             empty_answer.update_quiz_status()
 

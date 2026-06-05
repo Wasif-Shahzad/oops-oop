@@ -70,8 +70,7 @@ def next_view(request):
         # only happens if the quiz hasn't started yet
         return redirect(reverse('core:index'))
 
-    is_first = request.user.current_passed == 0 and request.user.incorrect_counter == 0
-    user_quiz.get_next_question(auto_submit=not is_first)
+    user_quiz.get_next_question(auto_submit=True)
 
     if user_quiz.current_question is None:
         return render(
@@ -98,6 +97,9 @@ def quiz_view(request):
     ).order_by("-started_at").first()
     if user_quiz is None:
         return redirect(reverse('core:index'))
+
+    if user_quiz.current_question is None:
+        user_quiz.get_next_question(auto_submit=False)
 
     context: dict[str, Any] = {
         "user_quiz": user_quiz,

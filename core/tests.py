@@ -53,6 +53,8 @@ class QuizTest(TestCase):
                 user=john,
                 level__level_number=1,
             ).first()
+            # first one is to get an initial quiz
+            johns_quiz.get_next_question(randomized=False, auto_submit=False)
             johns_answer = johns_quiz.submit_answer("11")
             johns_answer.update_quiz_status()
             john.refresh_from_db()
@@ -70,6 +72,8 @@ class QuizTest(TestCase):
                 user=john,
                 level__level_number=1,
             ).first()
+            # first one is to get an initial quiz
+            johns_quiz.get_next_question(randomized=False, auto_submit=False)
             for i in [1, 2]:
                 johns_answer = johns_quiz.submit_answer(f"1{i}")
                 johns_answer.update_quiz_status()
@@ -81,6 +85,8 @@ class QuizTest(TestCase):
                 user=john,
                 level__level_number=2,
             ).first()
+            # first one is to get an initial quiz
+            johns_quiz.get_next_question(randomized=False, auto_submit=False)
             for i in range(2):
                 johns_answer = johns_quiz.submit_answer(f"32")
                 johns_answer.update_quiz_status()
@@ -96,7 +102,9 @@ class QuizTest(TestCase):
             user=john,
             level__level_number=1
         ).first()
-        johns_quiz.get_next_question(randomized=False)
+        # first one is to get an initial quiz
+        johns_quiz.get_next_question(auto_submit=False)
+        johns_quiz.get_next_question(auto_submit=True)
         john.refresh_from_db()
         self.assertEqual(john.incorrect_counter, 1)
 
@@ -107,6 +115,8 @@ class QuizTest(TestCase):
             user=john,
             level__level_number=1
         ).first()
+        # first one is to get an initial quiz
+        johns_quiz.get_next_question(randomized=False, auto_submit=False)
         sleep(2)
         johns_answer = johns_quiz.submit_answer("11")
         self.assertFalse(johns_answer.is_correct)
@@ -119,6 +129,8 @@ class QuizTest(TestCase):
             user=john,
             level__level_number=1
         ).first()
+        # first one is to get an initial quiz
+        johns_quiz.get_next_question(randomized=False, auto_submit=False)
         johns_answer = johns_quiz.submit_answer("11")
         self.assertTrue(johns_answer.is_correct)
         self.assertFalse(johns_answer.timed_out)
@@ -134,6 +146,8 @@ class QuizTest(TestCase):
             user=john,
             level__level_number=1
         ).first()
+        # first one is to get an initial quiz
+        johns_quiz.get_next_question(randomized=False, auto_submit=False)
         for i in range(2):
             johns_answer = johns_quiz.submit_answer("22")
             johns_answer.update_quiz_status()
@@ -210,11 +224,13 @@ class ViewsTest(TestCase):
         self.client.login(username=john.username, password="john123")
 
         lvl = Level.objects.create(level_number=1)
-        UserQuiz.objects.create(
+        johns_quiz = UserQuiz.objects.create(
             user=john,
             level=lvl,
             current_question=None,
         )
+        # first one is to get an initial quiz
+        johns_quiz.get_next_question(randomized=False, auto_submit=False)
 
         response = self.client.get(reverse('core:next'))
         self.assertContains(response, "No more questions at this level. You have failed!")
@@ -236,12 +252,14 @@ class ViewsTest(TestCase):
         )
         lvl = Level.objects.create(level_number=1)
         lvl.questions.add(q)
-        UserQuiz.objects.create(
+        johns_quiz = UserQuiz.objects.create(
             user=john,
             level=lvl,
             current_question=q,
             current_question_started_at=timezone.now()
         )
+        # first one is to get an initial quiz
+        johns_quiz.get_next_question(randomized=False, auto_submit=False)
 
         response = self.client.post(reverse('core:quiz'), {"ans": '2'})
 
