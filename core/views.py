@@ -73,6 +73,7 @@ def next_view(request):
     user_quiz.get_next_question(auto_submit=True)
 
     if user_quiz.current_question is None:
+        request.session['quiz_started'] = False
         return render(
             request,
             "core/result.html",
@@ -86,6 +87,7 @@ def quiz_view(request):
         return redirect(reverse('core:login'))
 
     if request.user.current_level > settings.QUIZ_NUMBER_OF_LEVELS:
+        request.session['quiz_started'] = False
         return render(
             request,
             "core/result.html",
