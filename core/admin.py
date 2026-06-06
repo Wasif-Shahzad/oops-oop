@@ -10,6 +10,7 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('current_level', 'current_passed', 'incorrect_counter', 'times_down',)}),
     )
+    list_display = ['username', 'email', 'max_level', 'current_level', 'is_staff']
 
 
 class ChoiceInLine(admin.StackedInline):
@@ -28,6 +29,7 @@ class UserQuizModel(admin.ModelAdmin):
 class UserAnswerModel(admin.ModelAdmin):
     search_fields = ["user_quiz__user__username"]
     list_filter = ["is_correct", "timed_out"]
+    list_display = ['__str__', 'user_quiz__user__username', 'is_correct', 'timed_out']
 
 
 admin.site.register(User, CustomUserAdmin)
