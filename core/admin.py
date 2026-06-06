@@ -1,6 +1,15 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from .models import User, Question, Choice, Level, UserQuiz, UserAnswer
+
+
+class CustomUserAdmin(UserAdmin):
+    model = User
+
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('current_level', 'current_passed', 'incorrect_counter', 'times_down',)}),
+    )
 
 
 class ChoiceInLine(admin.StackedInline):
@@ -21,7 +30,7 @@ class UserAnswerModel(admin.ModelAdmin):
     list_filter = ["is_correct", "timed_out"]
 
 
-admin.site.register(User)
+admin.site.register(User, CustomUserAdmin)
 admin.site.register(Question, QuestionModel)
 admin.site.register(Level)
 admin.site.register(UserQuiz, UserQuizModel)
