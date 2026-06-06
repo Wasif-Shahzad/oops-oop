@@ -12,9 +12,10 @@ class User(AbstractUser):
     current_passed = models.IntegerField(default=0)
     incorrect_counter = models.IntegerField(default=0)
     times_down = models.IntegerField(default=0)
+    max_level = models.IntegerField(default=0)
 
     def reset(self):
-        self.current_level = 1
+        self.current_level = self.max_level = 1
         self.current_passed = self.incorrect_counter = self.times_down = 0
         self.save()
 
@@ -142,6 +143,8 @@ class UserAnswer(models.Model):
                 user.current_level -= 1
                 user.current_passed = user.incorrect_counter = 0
                 user.times_down += 1
+
+        user.max_level = max(user.max_level, user.current_level)
         user.save()
 
     def __str__(self):
